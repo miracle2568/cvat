@@ -139,6 +139,14 @@ allow {
     input.scope == utils.CREATE_IN_JOB
     input.auth.organization.id == input.resource.organization.id
     utils.is_organization
+    utils.has_perm(utils.USER)
+    organizations.has_perm(organizations.WORKER)
+}
+
+allow {
+    input.scope == utils.CREATE_IN_JOB
+    input.auth.organization.id == input.resource.organization.id
+    utils.is_organization
     utils.has_perm(utils.WORKER)
     organizations.is_member
     is_job_staff
@@ -186,6 +194,15 @@ filter = [] { # Django Q object to filter list of entries
         {"job__segment__task__project__organization": org.id}, "|"
     ]
 } else = qobject {
+    utils.is_organization
+    utils.has_perm(utils.USER)
+    organizations.has_perm(organizations.WORKER)
+    org := input.auth.organization
+    qobject := [
+        {"job__segment__task__organization": org.id},
+        {"job__segment__task__project__organization": org.id}, "|"
+    ]
+} else = qobject {
     organizations.has_perm(organizations.WORKER)
     user := input.auth.user
     org := input.auth.organization
@@ -212,6 +229,13 @@ allow {
     input.auth.organization.id == input.resource.organization.id
     utils.has_perm(utils.USER)
     organizations.has_perm(organizations.MAINTAINER)
+}
+
+allow {
+    input.scope == utils.VIEW
+    input.auth.organization.id == input.resource.organization.id
+    utils.has_perm(utils.USER)
+    organizations.has_perm(organizations.WORKER)
 }
 
 allow {

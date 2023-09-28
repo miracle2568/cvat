@@ -127,6 +127,13 @@ filter = [] { # Django Q object to filter list of entries
         {"segment__task__organization": input.auth.organization.id},
         {"segment__task__project__organization": input.auth.organization.id}, "|"]
 } else = qobject {
+    utils.is_organization
+    utils.has_perm(utils.USER)
+    organizations.has_perm(organizations.WORKER)
+    qobject := [
+        {"segment__task__organization": input.auth.organization.id},
+        {"segment__task__project__organization": input.auth.organization.id}, "|"]
+} else = qobject {
     organizations.has_perm(organizations.WORKER)
     user := input.auth.user
     qobject := [
@@ -179,6 +186,16 @@ allow {
       utils.VIEW_ANNOTATIONS, utils.VIEW_DATA, utils.VIEW_METADATA
     }[input.scope]
     input.auth.organization.id == input.resource.organization.id
+    utils.has_perm(utils.USER)
+    organizations.has_perm(organizations.WORKER)
+}
+
+allow {
+    { utils.VIEW,
+      utils.EXPORT_DATASET, utils.EXPORT_ANNOTATIONS,
+      utils.VIEW_ANNOTATIONS, utils.VIEW_DATA, utils.VIEW_METADATA
+    }[input.scope]
+    input.auth.organization.id == input.resource.organization.id
     organizations.has_perm(organizations.WORKER)
     is_job_staff
 }
@@ -197,6 +214,14 @@ allow {
     input.auth.organization.id == input.resource.organization.id
     utils.has_perm(utils.USER)
     organizations.has_perm(organizations.MAINTAINER)
+}
+
+allow {
+    { utils.UPDATE_STATE, utils.UPDATE_ANNOTATIONS, utils.DELETE_ANNOTATIONS,
+      utils.IMPORT_ANNOTATIONS, utils.UPDATE_METADATA }[input.scope]
+    input.auth.organization.id == input.resource.organization.id
+    utils.has_perm(utils.USER)
+    organizations.has_perm(organizations.WORKER)
 }
 
 allow {

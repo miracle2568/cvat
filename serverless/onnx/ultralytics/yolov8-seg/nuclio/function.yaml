@@ -1,0 +1,49 @@
+metadata:
+  name: onnx-ultralytics-yolov8-seg
+  namespace: cvat
+  annotations:
+    name: YOLO v8 Segment
+    type: detector
+    framework: onnx
+    spec: |
+      [
+        { "id": 0, "name": "person" },
+        { "id": 1, "name": "text" },
+        { "id": 2, "name": "window" }
+      ]
+spec:
+  description: YOLO v8 Segment via onnx
+  runtime: 'python:3.8'
+  handler: main:handler
+  eventTimeout: 30s
+  build:
+    image: cvat.onnx.ultralytics.yolov8-seg
+    baseImage: ubuntu:22.04
+
+    directives:
+      preCopy:
+        - kind: USER
+          value: root
+        - kind: RUN
+          value: apt update && apt install --no-install-recommends -y wget python3-pip
+        - kind: RUN
+          value: pip install onnxruntime opencv-python-headless pyyaml
+        - kind: WORKDIR
+          value: /opt/nuclio
+        - kind: RUN
+          value: ln -s /usr/bin/python3 /usr/bin/python
+
+  triggers:
+    myHttpTrigger:
+      maxWorkers: 2
+      kind: 'http'
+      workerAvailabilityTimeoutMilliseconds: 10000
+      attributes:
+        maxRequestBodySize: 33554432 # 32MB
+
+  platform:
+    attributes:
+      restartPolicy:
+        name: always
+        maximumRetryCount: 3
+      mountMode: volume
