@@ -64,10 +64,10 @@ allow if {
     utils.is_admin
 }
 
-allow if {
-    input.scope == utils.CREATE
-    utils.has_perm(input.settings.organizations_min_role_to_create)
-}
+# allow if {
+#     input.scope == utils.CREATE
+#     utils.has_perm(input.settings.organizations_min_role_to_create)
+# }
 
 filter := {} if { # Django Q object to filter list of entries
     utils.is_admin
