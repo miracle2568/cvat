@@ -10,9 +10,7 @@ x-backend-settings: &backend-settings
     CVAT_POSTGRES_PORT:
     CVAT_POSTGRES_DBNAME:
     CVAT_POSTGRES_USER:
-    CVAT_POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-  secrets:
-    - postgres_password
+    CVAT_POSTGRES_PASSWORD:
 
 services:
   cvat_db:
@@ -28,7 +26,3 @@ services:
   cvat_worker_webhooks: *backend-settings
   cvat_worker_chunks: *backend-settings
   cvat_worker_consensus: *backend-settings
-
-secrets:
-  postgres_password:
-    environment: CVAT_POSTGRES_PASSWORD
