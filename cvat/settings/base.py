@@ -490,6 +490,7 @@ USE_I18N = True
 USE_TZ = True
 
 CSRF_COOKIE_NAME = "csrftoken"
+CSRF_TRUSTED_ORIGINS = ["https://cvat.miracle-develop.com"]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
@@ -776,17 +777,6 @@ CLICKHOUSE = {
     }
 }
 
-if (postgres_password_file := os.getenv("CVAT_POSTGRES_PASSWORD_FILE")) is not None:
-    if "CVAT_POSTGRES_PASSWORD" in os.environ:
-        raise ImproperlyConfigured(
-            "The CVAT_POSTGRES_PASSWORD and CVAT_POSTGRES_PASSWORD_FILE"
-            " environment variables must not be set at the same time"
-        )
-
-    postgres_password = Path(postgres_password_file).read_text(encoding="UTF-8").rstrip("\n")
-else:
-    postgres_password = os.getenv("CVAT_POSTGRES_PASSWORD", "")
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -799,11 +789,10 @@ DATABASES = {
         "HOST": os.getenv("CVAT_POSTGRES_HOST", "cvat_db"),
         "NAME": os.getenv("CVAT_POSTGRES_DBNAME", "cvat"),
         "USER": os.getenv("CVAT_POSTGRES_USER", "root"),
-        "PASSWORD": postgres_password,
+        "PASSWORD": os.getenv("CVAT_POSTGRES_PASSWORD", ""),
         "PORT": os.getenv("CVAT_POSTGRES_PORT", 5432),
         "OPTIONS": {
             "application_name": os.getenv("CVAT_POSTGRES_APPLICATION_NAME", "cvat"),
-            "options": f"-c lock_timeout={CVAT_DB_LOCK_TIMEOUT * 1000}",
         },
     }
 }
