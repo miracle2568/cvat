@@ -63,11 +63,11 @@ allow if {
     utils.is_admin
 }
 
-allow if {
-    input.scope in {utils.CREATE, utils.IMPORT_BACKUP}
-    utils.is_sandbox
-    utils.has_perm(utils.USER)
-}
+# allow if {
+#     input.scope in {utils.CREATE, utils.IMPORT_BACKUP}
+#     utils.is_sandbox
+#     utils.has_perm(utils.USER)
+# }
 
 allow if {
     input.scope in {utils.CREATE, utils.IMPORT_BACKUP}
