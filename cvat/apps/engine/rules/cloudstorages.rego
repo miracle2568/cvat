@@ -36,11 +36,11 @@ allow if {
     utils.is_admin
 }
 
-allow if {
-    input.scope == utils.CREATE
-    utils.has_perm(utils.USER)
-    utils.is_sandbox
-}
+# allow if {
+#     input.scope == utils.CREATE
+#     utils.has_perm(utils.USER)
+#     utils.is_sandbox
+# }
 
 allow if {
     input.scope == utils.CREATE
