@@ -793,6 +793,7 @@ DATABASES = {
         "PORT": os.getenv("CVAT_POSTGRES_PORT", 5432),
         "OPTIONS": {
             "application_name": os.getenv("CVAT_POSTGRES_APPLICATION_NAME", "cvat"),
+            "options": f"-c lock_timeout={CVAT_DB_LOCK_TIMEOUT * 1000}",
         },
     }
 }
